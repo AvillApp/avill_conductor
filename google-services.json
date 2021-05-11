@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "2421208313",
+    "firebase_url": "https://avillapp-4d0f8.firebaseio.com",
+    "project_id": "avillapp-4d0f8",
+    "storage_bucket": "avillapp-4d0f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2421208313:android:09162b3d3efca4b1b0de28",
+        "android_client_info": {
+          "package_name": "com.avillapp.io"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "2421208313-hh3t9ad97c0gqtdrbkcvn2fqv0tvr44m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIlFBXBRuOxvPNIwKWgBd8MPjlnqSeNS0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "2421208313-hh3t9ad97c0gqtdrbkcvn2fqv0tvr44m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
