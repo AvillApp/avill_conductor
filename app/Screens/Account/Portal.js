@@ -9,7 +9,7 @@ export default function Portal({ navigation }) {
     <Container style={{ flex: 2 }}>
       <CustomHeader
         navigation={navigation}
-        title="Mis vehiculos"
+        title="Servicios"
         isHome={false}
         isLogin={false}
       />

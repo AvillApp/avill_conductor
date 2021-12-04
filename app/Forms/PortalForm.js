@@ -9,124 +9,88 @@ import {
   Body,
   Right,
 } from "native-base";
-import Push from "../Screens/push";
-import { api } from "../Lib/utils/db";
-import Popup from "../Lib/plug/Popup";
+import { Badge } from "react-native-elements";
+import API from "../Lib/utils/db";
 
 const { height } = Dimensions.get("window");
 
 export default function PortalForm({ navigation }) {
-  const [isVisibleLoading, setIsVisibleLoading] = useState(false);
-  const [txt, setTxt] = useState();
-  const [destino, setDestino] = useState();
-  const [idPedido, setIdPedido] = useState();
+  // const [isVisibleLoading, setIsVisibleLoading] = useState(false);
+  // const [txt, setTxt] = useState();
+  // const [destino, setDestino] = useState();
+  // const [idPedido, setIdPedido] = useState();
 
   const [data, setData] = useState([]);
 
   const changePoppop = () => {
-    setIsVisibleLoading(false)
-  }
+    setIsVisibleLoading(false);
+  };
 
   const getIdpedido = async () => {
-
-
-    const id_user = await AsyncStorage.getItem("id_user");
-    const ped = await AsyncStorage.getItem("id_pedido");
-    let sal=0;
-    if(ped){
-      if(ped!=undefined)
-        navigation.navigate("Estado", { Direccion: destino, idPedido: idPedido });
-      else
-        sal =1;
-    }else
-      sal=1;
-    
-    //console.log("Pedido obenido actual", ped)
-
-    if(sal==1){
-      const infoUser = await fetch(
-        `${api}pedidos/vehiculo/${id_user}?format=json`
-      );
-      const resUser = await infoUser.json();
-      //console.log(resUser)
-      setData(resUser); // Logs
-  
-      let estado;
-      let destino;
-      let precio;
-      let tiempo;
-      let indicacion;
-      let pedido;
-      resUser.map(dt => {
-          estado = dt.estado;
-          destino = dt.destino;
-          tiempo = dt.tiempo;
-          precio = dt.precio;
-          indicacion=dt.indicacion;
-          pedido = dt.id
-      })
-      
-      if(pedido!=undefined){
-  
-         //console.log("tiene id  y es", pedido.toString())
-         setIdPedido(pedido.toString())
-         setDestino(destino)
-  
-        if(estado==3){
-          setIsVisibleLoading(true);
-          setTxt(
-            "¿Aceptar pedido? \n \n Destino:" +
-              destino +
-              "\n Precio: " +
-              precio +
-              "\n Tiempo: " +
-              tiempo +
-              "\n Indicacion: " +
-              indicacion
-          );
-        }
-      }
-      //else
-      // console.log("No tiene id", pedido)
-    }
-    
+    // const id_user = await AsyncStorage.getItem("id_user");
+    const response = await API.get(`orders/?ordering=-id&format=json`);
+    const resUser = response.data;
+    setData(resUser); // Logs
   };
   //getIdpedido();
 
   useEffect(() => {
     //console.log("Valor del popup: ", isVisibleLoading)
-    if (!isVisibleLoading){
-      const interval = setInterval(() => {
-      //  console.log("Algo jeisson")
-          getIdpedido();
-         //setIsVisibleLoading(true);
-       }, 900);
-       return () => clearInterval(interval)
-    }
-    
-  }, [isVisibleLoading]);
+    //if (!isVisibleLoading) {
+    const interval = setInterval(() => {
+      getIdpedido();
+    }, 900);
+    return () => clearInterval(interval);
+    //}
+  }, []);
 
+  const HandleSeguimiento = (id) => {
+    //console.log("Hizo clic");
+    navigation.navigate("Estado", {
+      Pedido: id,
+    });
+  };
   return (
-      <Container>
-        <Content>
-        { <Popup text={txt} isVisible={isVisibleLoading} changedEst={changePoppop} idPedido={idPedido} /> }
-          {data.map((datos) => 
-            (  
-          <ListItem key={datos.id}>
-              <Body>
-                <Text>{datos.vehiculo.placa}</Text>
-                <Text>{datos.vehiculo.modelo}</Text>
-              </Body>
-              <Right>
-                <Text>{datos.estado}
-                </Text>
-                <Icon name="arrow-forward" />
-              </Right> 
-            </ListItem>
-          ))}
-        </Content>
-      </Container>
+    <Container>
+      <Content>
+        {/* {
+          <Popup
+            text={txt}
+            isVisible={isVisibleLoading}
+            changedEst={changePoppop}
+            idPedido={idPedido}
+          />
+        } */}
+        {data.map((datos) => (
+          <ListItem key={datos.id} onPress={() => HandleSeguimiento(datos.id)}>
+            <Body>
+              <Text>Desde: {datos.emision}</Text>
+              <Text>Destino: {datos.destino}</Text>
+              <Text>Teléfono: {datos.telealt}</Text>
+            </Body>
+            <Right>
+              {datos.estado == 7 && (
+                <Badge status="success" value="Finalizado" />
+              )}
+              {datos.estado == 8 && <Badge status="error" value="Cancelado" />}
+              {(datos.estado == 9 || datos.estado == 3) && (
+                <Badge status="warning" value="En espera" />
+              )}
+              {datos.estado == 6 && <Badge status="primary" value="En ruta" />}
+              {datos.estado == 4 && (
+                <Badge status="primary" value="Confirmado" />
+              )}
+              {datos.estado == 5 && (
+                <Badge status="primary" value="En camino" />
+              )}
+              {/* <Text>{datos.estado}</Text> */}
 
+              <Icon name="arrow-forward" />
+            </Right>
+          </ListItem>
+        ))}
+      </Content>
+    </Container>
   );
 }
 const styles = StyleSheet.create({

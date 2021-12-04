@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "avillConductor",
-    "slug": "avillConductor",
+    "name": "AvillConductor",
+    "slug": "AvillConductor",
     "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,9 +19,13 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.avillconductor.io",
-      "versionCode": 1,
-      "permissions": []
+      "package": "com.conductoravill.io",
+      "versionCode": 3,
+      "permissions": [
+        "NOTIFICATIONS"
+      ],
+      "useNextNotificationsApi": true,
+      "googleServicesFile": "./google-services.json"
     }
   }
 }

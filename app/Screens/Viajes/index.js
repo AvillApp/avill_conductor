@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AsyncStorage } from "react-native";
 import {
   Container,
@@ -9,7 +9,8 @@ import {
   Body,
   Right,
 } from "native-base";
-import { api } from "../../Lib/utils/db";
+import { Badge } from "react-native-elements";
+import API from "../../Lib/utils/db";
 import CustomHeader from "../CustomHeader";
 
 export default function MisViajes({ navigation }) {
@@ -17,16 +18,19 @@ export default function MisViajes({ navigation }) {
   const getIdpedido = async () => {
     const id_user = await AsyncStorage.getItem("id_user");
 
-
-    const infoUser = await fetch(
-      `${api}pedidos/conductor/${id_user}?format=json`
+    const response = await API.get(
+      `orders/?search=${id_user}&estado=7&format=json`
     );
-    const resUser = await infoUser.json();
-    setData(resUser); // Logs
-  
+    setData(response.data); // Logs
   };
-  getIdpedido();
-  
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getIdpedido();
+    }, 900);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Container>
       <CustomHeader
@@ -39,12 +43,11 @@ export default function MisViajes({ navigation }) {
         {data.map((datos) => (
           <ListItem>
             <Body>
-              <Text>{datos.destino}</Text>
+              <Text>Destino:{datos.destino}</Text>
               <Text>Costo: {datos.precio}</Text>
             </Body>
             <Right>
-              <Text>{datos.estado}</Text>
-              <Icon active name="arrow-forward" />
+              <Badge status="success" value="Finalizado" />
             </Right>
           </ListItem>
         ))}
